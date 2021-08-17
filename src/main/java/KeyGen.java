@@ -10,26 +10,24 @@ public class KeyGen {
 
     private static final String product = "STARUML.V4";
     private static final String SK = "DF9B72CC966FBE3A46F99858C5AEE";
-    private static final String intestazione = "#StarUML Crack";
+    private static final String intestazione = "#StarUML Crack#";
+    private static HostsFile host;
     private final String name;
     private final String licenseType;
     private final String quantity;
     private final String timestamp;
     private String licenseKey;
-    private HostsFile host;
 
-
-    public static void main(String[] args) throws IOException {
-        KeyGen k = new KeyGen("Cracked :-)", LicenseTypeEnum.Commercial.value, "Unlimited", "11-08-2021");
-        k.blockHost();
-        k.restoreHost();
-
-//        k.createLicenceFile();
+    static {
+        try {
+            host = new HostsFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 
-    public KeyGen(String name, String licenseType, String quantity, String timestamp) throws IOException {
-        this.host = new HostsFile();
+    public KeyGen(String name, String licenseType, String quantity, String timestamp) {
         this.name = name;
         this.licenseType = licenseType;
         this.quantity = quantity;
@@ -49,7 +47,7 @@ public class KeyGen {
         }
     }
 
-    public void blockHost() {
+    public static void blockHost() {
         try {
             HostsRecord record = new HostsRecord("127.0.0.1", "staruml.io");
             ArrayList<HostsRecord> records = new ArrayList<>();
@@ -60,7 +58,7 @@ public class KeyGen {
         }
     }
 
-    public void restoreHost() throws IOException {
+    public static void restoreHost() throws IOException {
         host.remove(intestazione);
     }
 
@@ -81,6 +79,15 @@ public class KeyGen {
             fw.close();
         } catch (Exception e) {
             System.out.println("Impossibile creare il file license");
+        }
+    }
+
+    public static void deleteLicenceFile() {
+        try {
+            File licence = new File(System.getenv("APPDATA") + "\\StarUML\\license.key");
+            licence.delete();
+        } catch (Exception e) {
+            System.out.println("Impossibile eliminare il file license");
         }
     }
 
